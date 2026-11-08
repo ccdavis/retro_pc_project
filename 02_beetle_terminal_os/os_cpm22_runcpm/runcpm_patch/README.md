@@ -26,5 +26,4 @@ Steps:
 
 Memory: RunCPM needs 64 KB for the Z80 plus its own ~20 KB; with Wi-Fi, BLE and
 LibSSH-ESP32 resident that fits the ESP32-C6 (512 KB) with room for a 32-64 KB RAM
-disk, not the 128 KB the first plan assumed, and not on the ESP32-C3 (400 KB) with
-SSH active.
+disk, and does not fit on the ESP32-C3 (400 KB) with SSH active.
