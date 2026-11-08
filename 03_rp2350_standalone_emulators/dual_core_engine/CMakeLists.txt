@@ -1,0 +1,15 @@
+# Standalone RP2350-Zero dual-core skeleton with HSTX DVI output
+#   cmake -S . -B build -G Ninja -DPICO_SDK_PATH=../../tools/pico-sdk -DPICO_TOOLCHAIN_PATH=../../tools/arm-gnu-toolchain/bin [-DSELECTED_MACHINE=3] && ninja -C build
+cmake_minimum_required(VERSION 3.13)
+set(PICO_BOARD waveshare_rp2350_zero CACHE STRING "")
+set(PICO_PLATFORM rp2350-arm-s CACHE STRING "")
+set(SELECTED_MACHINE 3 CACHE STRING "0 Apple //e, 1 PCjr, 2 C64, 3 TI-99/4A")
+include(${CMAKE_CURRENT_LIST_DIR}/../../tools/pico-sdk/external/pico_sdk_import.cmake)
+project(standalone_emulator C CXX ASM)
+pico_sdk_init()
+add_executable(standalone_emulator standalone_emulator_main.c ../../common/hstx_dvi.c)
+target_include_directories(standalone_emulator PRIVATE ../../common .)
+target_compile_definitions(standalone_emulator PRIVATE SELECTED_MACHINE=${SELECTED_MACHINE})
+target_compile_options(standalone_emulator PRIVATE -Wall -Wextra -O2)
+target_link_libraries(standalone_emulator pico_stdlib pico_multicore hardware_dma hardware_irq hardware_uart)
+pico_add_extra_outputs(standalone_emulator)

@@ -1,0 +1,36 @@
+diff --git a/RunCPM/cpm.h b/RunCPM/cpm.h
+index 109ffd1..fd615e2 100644
+--- a/RunCPM/cpm.h
++++ b/RunCPM/cpm.h
+@@ -735,6 +735,8 @@ static uint16 programRetCode = 0;
+    function 11 (Get console status). */
+ static uint16 consoleMode = 0;
+ 
++#include "runcpm_host_bdos.h"   /* AirTag host extensions 220..223 */
++
+ void _Bdos(void) {
+     uint8 ch = LOW_REGISTER(BC);
+ 
+@@ -2130,6 +2132,22 @@ void _Bdos(void) {
+         break;
+     }
+ 
++    /*
++       C = 220..224 (DCh..E0h) : AirTag host extensions (SSH, TELNET, WIFI, BANK, SPEAK)
++       DE = CP/M command tail (length byte + text), or NUL-terminated text for SPEAK.
++       See runcpm_host_bdos.h.
++    */
++    case BDOS_HOST_SSH:
++    case BDOS_HOST_TELNET:
++    case BDOS_HOST_WIFI:
++    case BDOS_HOST_BANK:
++    case BDOS_HOST_SPEAK: {
++        uint8 host_result = 0;
++        host_bdos_dispatch(ch, DE, &host_result);
++        HL = host_result;
++        break;
++    }
++
+     /*
+        Unimplemented calls get listed
+      */

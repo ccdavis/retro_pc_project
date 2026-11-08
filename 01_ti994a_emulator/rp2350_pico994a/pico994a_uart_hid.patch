@@ -1,0 +1,40 @@
+diff --git a/main.cpp b/main.cpp
+index ca80d08..84e4aeb 100644
+--- a/main.cpp
++++ b/main.cpp
+@@ -2,6 +2,7 @@
+ // pico-994A - Texas Instruments TI-99/4A emulator for RP2350
+ //
+ // Front end: video, audio, input, menu and the emulation loop, on top of pico_shared.
++#include "uart_hid_bridge.h"   // AirTag: Beetle BLE keyboard over UART1
+ // The emulated machine lives in ti99/ (ported from DS994a - see ti99/DS994a-README.md).
+ //
+ // Part of the same family as pico-infonesPlus, pico-smsplus, pico-pacPlus,
+@@ -1520,6 +1521,7 @@ static void processPerFrame(void)
+     nespad_read_finish();
+ #endif
+     tuh_task();
++    beetle_uart_hid_poll();     // AirTag: Beetle BLE keyboard over UART1
+ 
+ #if WII_PIN_SDA >= 0 and WII_PIN_SCL >= 0
+     wiipad_raw_cached = wiipad_read();
+@@ -1629,6 +1631,7 @@ int main()
+     // machine - pull it to the idle-high a real sender would hold it at.
+     gpio_pull_up(PICO_DEFAULT_UART_RX_PIN);
+     serialKeyboardIrqInit();
++    beetle_uart_hid_init();      // AirTag: Beetle BLE keyboard over UART1
+ #endif
+ 
+     printf("==========================================================================================\n");
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 8a4e740..a19e175 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -109,6 +109,7 @@ message("PIO USB support: ${ENABLE_PIO_USB}, using PIO: ${PIO_USB_USE_PIO}")
+ # ---------------------------------------------------------------------------
+ add_executable(${projectname}
+     main.cpp
++    uart_hid_bridge.cpp
+     splash.cpp
+     DefaultSS444.c
+     DefaultSS555.c

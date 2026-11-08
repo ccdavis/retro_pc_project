@@ -1,0 +1,26 @@
+# Downloaded toolchains, SDKs and third-party clones live under tools/ and next to the
+# build scripts; only our scripts are tracked (see tools/*.sh and README.md).
+/tools/*
+!/tools/*.sh
+/01_ti994a_emulator/rp2350_pico994a/pico-994A/
+/03_rp2350_standalone_emulators/frank-apple/
+/03_rp2350_standalone_emulators/apple2c-pico2/
+/03_rp2350_standalone_emulators/pico-286/
+/03_rp2350_standalone_emulators/frank-c64/
+/03_rp2350_standalone_emulators/pico-994A/
+/04_game_consoles_and_amiga/Pico2Atari8/
+/04_game_consoles_and_amiga/pico-smsplus/
+/04_game_consoles_and_amiga/pico-infonesPlus/
+/04_game_consoles_and_amiga/pico-genesisPlus/
+/04_game_consoles_and_amiga/pico-snesPlus/
+/04_game_consoles_and_amiga/pico-mac/
+/04_game_consoles_and_amiga/NanoMig/
+
+# Build output and test artefacts (regenerate with the build scripts)
+build/
+build_*/
+out/
+*.o
+*.log
+/05_accessible_speech_retro_pc/host_test/sim_core1
+__pycache__/
