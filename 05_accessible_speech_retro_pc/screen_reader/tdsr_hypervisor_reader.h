@@ -2,8 +2,8 @@
  * tdsr_hypervisor_reader.h
  *
  * Out-of-band hypervisor screen reader for RP2350 Core 1, modelled on rust-tdsr
- * (/home/ccd/rust-tdsr: review cursor, symbol dictionary, key echo detection,
- * TUI screen diffing) and on how Provox 7 polls text video memory from a timer.
+ * (review cursor, symbol dictionary, key echo detection, TUI screen diffing)
+ * and on how Provox 7 polls text video memory from a timer.
  *
  * It never touches the emulated machine: Core 1 snapshots the emulated video
  * RAM in shared SRAM (a VT100 cell grid for CP/M, the Apple //e $0400 text

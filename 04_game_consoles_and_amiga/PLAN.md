@@ -26,7 +26,7 @@ Compared to 8-bit home computers, 1980s game consoles use less memory and map na
 
 ---
 
-## 3. Scanline Renderers in [`console_scanline_engines.h`](file:///home/ccd/retro_pc_project/04_game_consoles_and_amiga/console_scanline_engines.h)
+## 3. Scanline Renderers in [`console_scanline_engines.h`](console_scanline_engines.h)
 
 ### A. ColecoVision
 - Uses a Z80A @ 3.58 MHz, a **TI TMS9928A** VDP (the same video architecture as the TI-99/4A TMS9918A), and a **TI SN76489A** 3-voice PSG.
@@ -34,11 +34,11 @@ Compared to 8-bit home computers, 1980s game consoles use less memory and map na
 
 ### B. Atari 5200 (and Atari 400/800) — `ANTIC` + `GTIA`
 - The Atari 5200 consolidates the Atari 400/800 architecture with 16 KB of RAM. The **ANTIC** chip executes a per-frame Display List program, while **GTIA** overlays 4 Players (8-bit horizontal shift registers) and 4 Missiles (2-bit shift registers).
-- `render_atari5200_gtia_players()` in [`console_scanline_engines.h`](file:///home/ccd/retro_pc_project/04_game_consoles_and_amiga/console_scanline_engines.h) renders the 4 players and 4 missiles with `SIZEP`/`SIZEM` horizontal width scaling (1×, 2×, 4×) and player-over-missile priority. The underlying ANTIC playfield renderer (display list walker, character/map modes, and DLIs) is still to be written.
+- `render_atari5200_gtia_players()` in [`console_scanline_engines.h`](console_scanline_engines.h) renders the 4 players and 4 missiles with `SIZEP`/`SIZEM` horizontal width scaling (1×, 2×, 4×) and player-over-missile priority. The underlying ANTIC playfield renderer (display list walker, character/map modes, and DLIs) is still to be written.
 
 ### C. Atari 7800 — `MARIA` Line-Buffer Renderer
 - Rather than a tile background with an 8-sprite limit, the Atari 7800 **MARIA** chip renders all screen objects from per-zone Display Lists into two internal 160-byte line RAM buffers (painting into one while shifting the other to the display).
-- `render_scanline_atari7800_maria()` in [`console_scanline_engines.h`](file:///home/ccd/retro_pc_project/04_game_consoles_and_amiga/console_scanline_engines.h) parses a zone's display list (both 4-byte direct headers and 5-byte headers, including indirect character mode with `CHARBASE` and 2-byte characters) in 160A (2 bpp) mode into a 160-byte line buffer and scales it to a 640-pixel HDMI line. Still to be implemented: 160B and 320 modes, holey DMA, Kangaroo mode, and the outer Display List List (DLL) walker.
+- `render_scanline_atari7800_maria()` in [`console_scanline_engines.h`](console_scanline_engines.h) parses a zone's display list (both 4-byte direct headers and 5-byte headers, including indirect character mode with `CHARBASE` and 2-byte characters) in 160A (2 bpp) mode into a 160-byte line buffer and scales it to a 640-pixel HDMI line. Still to be implemented: 160B and 320 modes, holey DMA, Kangaroo mode, and the outer Display List List (DLL) walker.
 
 ---
 
@@ -47,7 +47,7 @@ Compared to 8-bit home computers, 1980s game consoles use less memory and map na
 ### A. 68000 Systems on the RP2350-Zero
 - **Apple Macintosh 128K (`evansm7/pico-mac` / `umac`):**
   - The 1984 Macintosh runs a 7.83 MHz 68000 with no custom graphics blitter or sprites—only a flat `512×342` 1-bit monochrome framebuffer (`21,888 bytes` of RAM).
-  - `pico-mac` (`umac`) runs inside internal SRAM (`MEMSIZE` up to ~208 KB, enough for System 1–3, *MacPaint*, and *MacWrite*). Upstream `pico-mac` outputs PIO/VGA video; `render_scanline_macintosh_512x342()` in [`console_scanline_engines.h`](file:///home/ccd/retro_pc_project/04_game_consoles_and_amiga/console_scanline_engines.h) provides the 512×342-to-640×480 scanline scaler for an HSTX HDMI port.
+  - `pico-mac` (`umac`) runs inside internal SRAM (`MEMSIZE` up to ~208 KB, enough for System 1–3, *MacPaint*, and *MacWrite*). Upstream `pico-mac` outputs PIO/VGA video; `render_scanline_macintosh_512x342()` in [`console_scanline_engines.h`](console_scanline_engines.h) provides the 512×342-to-640×480 scanline scaler for an HSTX HDMI port.
 - **Atari ST (`MCUME` / *Castaway* + 8 MB PSRAM):**
   - Uses an 8 MHz 68000, a 32 KB 4-bitplane framebuffer (`320×200×16` or `640×200×4`), and YM2149 PSG audio. Requires soldering an 8 MB QSPI PSRAM chip to the RP2350-Zero.
 

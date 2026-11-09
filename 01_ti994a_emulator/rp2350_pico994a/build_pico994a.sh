@@ -10,8 +10,8 @@
 #   an upstream issue.
 #   Verified 2026-11-07: pico994A.uf2 built (447 KB text, 251 KB bss) with Pico SDK 2.1.1.
 #
-#   PICO_SDK_PATH=/home/ccd/retro_pc_project/tools/pico-sdk \
-#   PICO_TOOLCHAIN_PATH=/home/ccd/retro_pc_project/tools/arm-gnu-toolchain/bin ./build_pico994a.sh
+#   PICO_SDK_PATH=../../tools/pico-sdk \
+#   PICO_TOOLCHAIN_PATH=../../tools/arm-gnu-toolchain/bin ./build_pico994a.sh
 set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_DIR="${SCRIPT_DIR}/pico-994A"
@@ -33,10 +33,17 @@ else
 fi
 
 echo "=== [3/4] toolchain ==="
+TOOLS_DIR="$(cd "${SCRIPT_DIR}/../../tools" 2>/dev/null && pwd || true)"
+[ -z "${PICO_SDK_PATH:-}" ] && [ -d "${TOOLS_DIR}/pico-sdk" ] && PICO_SDK_PATH="${TOOLS_DIR}/pico-sdk"
+[ -z "${PICO_TOOLCHAIN_PATH:-}" ] && [ -d "${TOOLS_DIR}/arm-gnu-toolchain/bin" ] && PICO_TOOLCHAIN_PATH="${TOOLS_DIR}/arm-gnu-toolchain/bin"
 : "${PICO_SDK_PATH:?set PICO_SDK_PATH to a Pico SDK 2.x checkout}"
+PICO_SDK_PATH="$(cd "${PICO_SDK_PATH}" && pwd)"
 export PICO_SDK_PATH
 EXTRA=()
-[ -n "${PICO_TOOLCHAIN_PATH:-}" ] && EXTRA+=("-DPICO_TOOLCHAIN_PATH=${PICO_TOOLCHAIN_PATH}")
+if [ -n "${PICO_TOOLCHAIN_PATH:-}" ]; then
+    PICO_TOOLCHAIN_PATH="$(cd "${PICO_TOOLCHAIN_PATH}" && pwd)"
+    EXTRA+=("-DPICO_TOOLCHAIN_PATH=${PICO_TOOLCHAIN_PATH}")
+fi
 
 echo "=== [4/4] build: HW_CONFIG=2 (HSTX pins 12-19, SD 2-5), waveshare_rp2350_zero, Release ==="
 cmake -S "${REPO_DIR}" -B "${REPO_DIR}/build" -G Ninja \

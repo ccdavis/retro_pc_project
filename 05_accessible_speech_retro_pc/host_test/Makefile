@@ -4,11 +4,11 @@
 #   make run        run it: tests + WAV files in out/
 #   make ENGINES=   build with the tone voice only (no DECtalk / ESPK sources needed)
 #
-# Engines come from the working trees used for the DOS builds:
-DT_DIR   ?= /home/ccd/accessible_os/freedos/src/dectalk
-DT_UP    ?= $(DT_DIR)/../dectalk-upstream/dectalk/src/dapi/src
-ESPK_DIR ?= /home/ccd/vintage-pc-speech/src/espeak
-KLATT    ?= /home/ccd/vintage-pc-speech/src/klatt
+# Engine sources live under ../third_party/{dectalk,espk,klatt}:
+DT_DIR   ?= $(abspath ../third_party/dectalk)
+DT_UP    ?= $(DT_DIR)/dectalk-upstream/dectalk/src/dapi/src
+ESPK_DIR ?= $(abspath ../third_party/espk)
+KLATT    ?= $(abspath ../third_party/klatt)
 
 .DEFAULT_GOAL := all
 TOP   := ..

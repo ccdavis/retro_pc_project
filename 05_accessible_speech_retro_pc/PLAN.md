@@ -3,9 +3,9 @@
 A self-voicing retro computer built on the **Waveshare RP2350-Zero** (dual Cortex-M33 at 150 MHz, 520 KB SRAM, 4 MB QSPI flash), optionally paired with a Beetle ESP32-C6/C3 for Bluetooth keyboard and Wi-Fi. Core 0 emulates the vintage machine (Z80 CP/M 2.2, 65C02 Apple //e, or 8088 PC XT); Core 1 acts as a dedicated speech coprocessor that appears to the emulated machine as a serial **RC Systems DoubleTalk LT**, synthesizes speech using **DECtalk 4.x** (ARM7/Epson embedded configuration) or **ESPK** (eSpeak-NG English front end + integer Klatt), and runs an **out-of-band hypervisor screen reader** that reads the emulated video RAM.
 
 It builds on three sibling projects:
-- [`/home/ccd/vintage-pc-speech`](file:///home/ccd/vintage-pc-speech/README.md) and its working tree [`/home/ccd/accessible_os/freedos`](file:///home/ccd/accessible_os/freedos/src/dectalk/NOTES.md): the DOS ports of DECtalk (`dtalkd`), ESPK (`espkd`), and SBTALK, and the DoubleTalk protocol parser verified against Provox 7 under QEMU.
-- [`/home/ccd/rust-tdsr`](file:///home/ccd/rust-tdsr/CLAUDE.md): review cursor, symbol dictionary, key-echo detection, and TUI screen diffing.
-- [`/home/ccd/accessible_os`](file:///home/ccd/accessible_os/README.md): the requirement that a blind user hears the machine within the first second of boot, every time.
+- `vintage-pc-speech` and its working tree `accessible_os/freedos`: the DOS ports of DECtalk (`dtalkd`), ESPK (`espkd`), and SBTALK, and the DoubleTalk protocol parser verified against Provox 7 under QEMU.
+- `rust-tdsr`: review cursor, symbol dictionary, key-echo detection, and TUI screen diffing.
+- `accessible_os`: the requirement that a blind user hears the machine within the first second of boot, every time.
 
 **Build & test status:** The Core 1 software is implemented, unit-tested on the host with the real speech engines (105 checks), verified bit-identically on a QEMU Cortex-M33 model, and linked into a Pico SDK firmware image (`talking_retro.uf2`) for the RP2350-Zero. Testing on physical hardware and HDMI audio data-island encoding remain open.
 
@@ -56,12 +56,12 @@ The power-on sequence on Core 1 runs in the following order so the user gets imm
 
 ## 3. Speech Engines on Core 1
 
-Whisper WER figures below use `base.en` on the 24-sentence set from `vintage-pc-speech/src/espeak/results/sentences24.txt`. Object sizes are from `arm-none-eabi-size` at `-O2` for Cortex-M33:
+Whisper WER figures below use `base.en` on the 24-sentence set from [`third_party/espk/results/sentences24.txt`](third_party/espk/results/sentences24.txt). Object sizes are from `arm-none-eabi-size` at `-O2` for Cortex-M33:
 
 | Engine | Source | WER (`base.en`) | Flash | SRAM Static | Stack | Heap | Core 1 Load @ 150 MHz | Notes |
 | :--- | :--- | ---: | ---: | ---: | ---: | ---: | ---: | :--- |
-| **DECtalk 4.x ARM7** (`epsonapi.c`, full US dictionary) | `accessible_os/freedos/src/dectalk` + `github.com/dectalk/dectalk` @ `69ebb459` | **12.4%** | **667 KB** (318 KB code, 20 KB data, 329 KB dict) | 54 KB (34 KB BSS + 20 KB data) | 2.3 KB | 0 | **3.5%** (5.3 M instructions / audio sec, 28× real time) | **Primary voice.** Fonix proprietary source. |
-| **ESPK** (eSpeak-NG English + `klatt_fx` Q12) | `vintage-pc-speech/src/espeak`, `src/klatt` | 26–30% at 8 kHz 8-bit; 22–24% at 11 kHz F1–F4 | **514 KB** (136 KB code, 378 KB `ESPK.DAT` in XIP flash) | 79 KB BSS | 47.5 KB | 12 KB | **1.8%** (2.7 M/s, 56×) | **Secondary voice, GPLv3+.** Current output path is 8-bit (`wgout.c`); 16-bit via `kfx_render16` is a planned improvement. |
+| **DECtalk 4.x ARM7** (`epsonapi.c`, full US dictionary) | [`third_party/dectalk/`](third_party/dectalk/) + `github.com/dectalk/dectalk` @ `69ebb459` (via [`get_dectalk.sh`](third_party/dectalk/get_dectalk.sh)) | **12.4%** | **667 KB** (318 KB code, 20 KB data, 329 KB dict) | 54 KB (34 KB BSS + 20 KB data) | 2.3 KB | 0 | **3.5%** (5.3 M instructions / audio sec, 28× real time) | **Primary voice.** Fonix proprietary source. |
+| **ESPK** (eSpeak-NG English + `klatt_fx` Q12) | [`third_party/espk/`](third_party/espk/), [`third_party/klatt/`](third_party/klatt/) | 26–30% at 8 kHz 8-bit; 22–24% at 11 kHz F1–F4 | **514 KB** (136 KB code, 378 KB `ESPK.DAT` in XIP flash) | 79 KB BSS | 47.5 KB | 12 KB | **1.8%** (2.7 M/s, 56×) | **Secondary voice, GPLv3+.** Current output path is 8-bit (`wgout.c`); 16-bit via `kfx_render16` is a planned improvement. |
 | Test tone | Built in | – | 1 KB | – | – | – | – | Proves the audio path without an engine. |
 | SAM / SBTALK | `vintage-pc-speech/src/sbtalk` | 33% | 28 KB | 8 KB | – | – | <1% | Not integrated. |
 
@@ -77,7 +77,7 @@ Whisper WER figures below use `base.en` on the 24-sentence set from `vintage-pc-
 
 ### DECtalk Build Details
 - **Required defines:** `-DARM7 -DENGLISH_US -DACNA -DARM7_NOSWI -DENGLISH -Di386 -DWIN32_TEST -DBLD_DECTALK_DLL -DCHEESY_DICT_COMPRESSION`, linked with the full US dictionary (`build-gen/maindict.c`, 329 KB). `-DCHEESY_DICT_COMPRESSION` is mandatory so dictionary lookups read entry offsets properly and preserve natural clause intonation.
-- **Translation unit isolation:** DECtalk's `include/port.h` defines `#define volatile` to empty on `ARM7`. Any translation unit that includes `epsonapi.h` loses `volatile` qualifiers, so the DECtalk glue lives in its own file ([`engine_dectalk.c`](file:///home/ccd/retro_pc_project/05_accessible_speech_retro_pc/speech_core1/engine_dectalk.c)) and includes `doubletalk_core1.h` before `epsonapi.h`.
+- **Translation unit isolation:** DECtalk's `include/port.h` defines `#define volatile` to empty on `ARM7`. Any translation unit that includes `epsonapi.h` loses `volatile` qualifiers, so the DECtalk glue lives in its own file ([`engine_dectalk.c`](speech_core1/engine_dectalk.c)) and includes `doubletalk_core1.h` before `epsonapi.h`.
 - **Sample callback semantics:** `short *cb(short *buf, long code)` passes `code == 0` for an audio block of 71 samples (11025 Hz) or 51 samples (8000 Hz) and `code == 3` for an index mark with no audio. Returning `NULL` from the callback sets `halting` and causes the next `TextToSpeechStart` to hang in `ls_util_next_item_new`; on a flush, the callback continues returning `buf` while discarding samples.
 - **DoubleTalk parameter mapping:** Speed `0..9` → `[:ra 100+20·s]` (`5` = 200 wpm); pitch `0..99` → `[:dv ap 60+1.25·p]` (`50` = 122 Hz); voice `0..7` → `[:np] [:nb] [:nh] [:nf] [:nd] [:nk] [:nu] [:nr]`; volume `0..9` → `{0, 20, 35, 50, 65, 80, 85, 90, 95, 100}%`.
 
@@ -90,6 +90,8 @@ speech_core1/doubletalk_core1.[ch]         Virtual DoubleTalk LT: FIFOs, parser,
 speech_core1/engine_dectalk.c              DECtalk ARM7 glue (isolated translation unit)
 speech_core1/engine_espk.c                 ESPK glue; espk_data_mem.c serves ESPK.DAT from flash in place
 speech_core1/compat/dirent.h               Bare-metal stand-in for unused directory scan in ESPK
+third_party/espk/, third_party/klatt/      Vendored ESPK front end, ESPK.DAT (378 KB), and klatt_fx Q12 synthesizer
+third_party/dectalk/                       DECtalk ARM7 file list, glue, patch, dictionary builder, and get_dectalk.sh
 screen_reader/tdsr_hypervisor_reader.[ch]  VRAM adapters (VT100 cells, Apple //e $0400, CGA $B8000), diff engine, review keys
 host_test/                                 sim_core1: 105 checks against the real engines, writes WAVs
 arm_qemu/                                  Runs the same code on QEMU Cortex-M33 (mps2-an505): sizes, instruction counts, WAVs

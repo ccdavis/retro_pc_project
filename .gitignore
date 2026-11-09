@@ -15,6 +15,8 @@
 /04_game_consoles_and_amiga/pico-snesPlus/
 /04_game_consoles_and_amiga/pico-mac/
 /04_game_consoles_and_amiga/NanoMig/
+/05_accessible_speech_retro_pc/third_party/dectalk/dectalk-upstream/
+/05_accessible_speech_retro_pc/third_party/dectalk/build-gen/
 
 # Build output and test artefacts (regenerate with the build scripts)
 build/

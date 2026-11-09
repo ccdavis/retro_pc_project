@@ -1,6 +1,6 @@
 /*
  * engine_espk.c -- ESPK (eSpeak-NG English front end + Q12 integer klatt_fx) on Core 1.
- * API from vintage-pc-speech/src/espeak/espk/espk.h; samples arrive through the
+ * API from third_party/espk/espk/espk.h; samples arrive through the
  * wgout_sink function pointer as unsigned 8-bit, a flush raises wgout_abort so
  * the pipeline unwinds without a longjmp (espkd/engine_espk.c).
  *

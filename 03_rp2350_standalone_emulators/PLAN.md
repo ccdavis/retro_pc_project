@@ -65,7 +65,7 @@ On the RP2040, bit-banging DVI over PIO consumed an entire CPU core. On the RP23
 ### A. Apple //e & Apple //c
 - Both the Enhanced Apple //e (with Extended 80-Column Card) and the Apple //c use **128 KB of RAM** (`Main` and `Aux` 64 KB banks).
 - A standard Apple II 5.25" Disk II image (`.DSK` or `.PO`) is **140 KB** (`35 tracks × 16 sectors × 256 bytes`), so 128 KB of system RAM + 32 KB ROM + a 140 KB floppy image fit inside the 520 KB SRAM simultaneously.
-- In [`rp2350_hstx_beamracer.h`](file:///home/ccd/retro_pc_project/03_rp2350_standalone_emulators/dual_core_engine/rp2350_hstx_beamracer.h), Core 1 renders Apple II Hi-Res (`280×192`, including white adjacent-pixel artifacting and high-bit palette phase shift) and Double Hi-Res (`560×192`) scanlines scaled to 640×480.
+- In [`rp2350_hstx_beamracer.h`](dual_core_engine/rp2350_hstx_beamracer.h), Core 1 renders Apple II Hi-Res (`280×192`, including white adjacent-pixel artifacting and high-bit palette phase shift) and Double Hi-Res (`560×192`) scanlines scaled to 640×480.
 
 ### B. IBM PCjr vs. IBM PC XT
 - Unlike a PC XT with a separate 16 KB CGA card, the **IBM PCjr's Video Gate Array (TGA)** shares a 16 KB or 32 KB window inside main system RAM and pairs it with a built-in **TI SN76489** 3-voice + noise sound chip at port `0xC0`. A 128–256 KB PCjr fits in the RP2350-Zero's internal SRAM and supports 320×200 16-color graphics and 3-voice audio.
@@ -80,7 +80,7 @@ On the RP2040, bit-banging DVI over PIO consumed an entire CPU core. On the RP23
 ## 4. Wireless Keyboard and Connectivity Options
 
 ### Option A: Beetle ESP32-C6/C3 Companion Inside the Case
-Stacking the Beetle ESP32-C6/C3 with the RP2350-Zero using the 4-wire link from [`01_ti994a_emulator`](file:///home/ccd/retro_pc_project/01_ti994a_emulator/PLAN.md) provides wireless input and network storage without an external USB OTG splitter:
+Stacking the Beetle ESP32-C6/C3 with the RP2350-Zero using the 4-wire link from [`01_ti994a_emulator`](../01_ti994a_emulator/PLAN.md) provides wireless input and network storage without an external USB OTG splitter:
 1. **Bluetooth Keyboard & Gamepad Bridge:** The Beetle pairs with a BLE keyboard/gamepad and outputs both `115200` baud UART HID frames (to RP2350 `GPIO 9`, `UART1 RX`) and **PS/2 clock & data** (`GPIO 6 & 7`). PS/2-native emulators (`frank-apple`, `frank-c64`, `pico-286`) use GPIO 6/7 (with their pin config edited to match), while UART-bridged builds (`pico-994A`, `standalone_emulator_main.c`) read `UART1`.
 2. **Wi-Fi Disk Upload (`0xAA 0x55 0x02` UART blocks):** Can stream `.DSK`, `.D64`/`.PRG`, or `.IMG` disk images from a browser into RP2350 SRAM over UART.
 3. **Virtual Serial Modem:** Maps `UART0` (`GPIO 0/1`) to the emulated serial port (`Super Serial Card`, `COM1:`, or C64 User Port) for Telnet/SSH dialing.

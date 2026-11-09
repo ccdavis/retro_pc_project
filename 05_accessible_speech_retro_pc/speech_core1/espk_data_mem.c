@@ -1,5 +1,5 @@
 /*
- * espk_data_mem.c -- replacement for vintage-pc-speech/src/espeak/espk/espk_data.c:
+ * espk_data_mem.c -- replacement for third_party/espk/espk/espk_data.c:
  * the ESPK.DAT pack may be supplied as a memory blob (XIP flash on the RP2350,
  * via espk_data_set_blob) or, when no blob is registered, read from a file
  * (host build).  Same symbols as the original so the rest of ESPK is unchanged.

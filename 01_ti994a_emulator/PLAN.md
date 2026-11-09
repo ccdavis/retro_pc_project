@@ -103,9 +103,9 @@ Type D pin map: 1 HPD, 2 utility, 3 D2+, 4 D2 shield, 5 D2-, 6 D1+, 7 D1 shield,
 
 ## 5. Keyboard Path into `pico-994A`
 
-`pico-994A`'s USB stack writes keyboard state into `io::getCurrentKeyboardState()` (modifier byte + 6 keycodes), which the emulator polls each frame. [`rp2350_pico994a/uart_hid_bridge.cpp`](file:///home/ccd/retro_pc_project/01_ti994a_emulator/rp2350_pico994a/uart_hid_bridge.cpp) drains `UART1` via interrupt, parses the 13-byte frames from the Beetle, and populates `io::getCurrentKeyboardState()` and `io::getCurrentGamePadState(0)`.
+`pico-994A`'s USB stack writes keyboard state into `io::getCurrentKeyboardState()` (modifier byte + 6 keycodes), which the emulator polls each frame. [`rp2350_pico994a/uart_hid_bridge.cpp`](rp2350_pico994a/uart_hid_bridge.cpp) drains `UART1` via interrupt, parses the 13-byte frames from the Beetle, and populates `io::getCurrentKeyboardState()` and `io::getCurrentGamePadState(0)`.
 
-[`build_pico994a.sh`](file:///home/ccd/retro_pc_project/01_ti994a_emulator/rp2350_pico994a/build_pico994a.sh) copies the bridge into the tree, applies [`pico994a_uart_hid.patch`](file:///home/ccd/retro_pc_project/01_ti994a_emulator/rp2350_pico994a/pico994a_uart_hid.patch) (adding init and poll calls in `main.cpp`), and builds `pico994A.uf2`.
+[`build_pico994a.sh`](rp2350_pico994a/build_pico994a.sh) copies the bridge into the tree, applies [`pico994a_uart_hid.patch`](rp2350_pico994a/pico994a_uart_hid.patch) (adding init and poll calls in `main.cpp`), and builds `pico994A.uf2`.
 
 As an unpatched fallback, `pico-994A` also has a built-in serial keyboard mode (enabled in its settings menu) that accepts plain ASCII on `UART0` at 115200 baud with XON/XOFF, though that mode is intended for pasting BASIC listings and does not support full matrix key scanning.
 
