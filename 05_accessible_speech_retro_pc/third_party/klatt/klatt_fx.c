@@ -7,7 +7,7 @@
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.  See upstream/klatt-3.04/COPYING.
+ * (at your option) any later version.  See LICENSE at the repository root.
  *
  * What is kept from parwave.c: the NATURAL glottal source run at 4x the
  * sample rate through the rlp downsampling resonator, spectral tilt,

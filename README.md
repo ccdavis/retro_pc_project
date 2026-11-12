@@ -25,3 +25,16 @@ Uses Core 1 of the RP2350-Zero as a dedicated speech synthesizer (DECtalk 4.x an
 
 - [`common/`](common/) — Shared RP2350 HSTX 640×480 DVI scanline driver ([`hstx_dvi.c`](common/hstx_dvi.c)) and 8×8 bitmap font ([`font8x8_basic.h`](common/font8x8_basic.h)).
 - [`tools/`](tools/) — Build scripts ([`compile_sketch.sh`](tools/compile_sketch.sh), [`install_arduino_cli.sh`](tools/install_arduino_cli.sh), [`install_rp2350_tools.sh`](tools/install_rp2350_tools.sh)) and local toolchains (ARM GCC, Pico SDK, Arduino CLI, QEMU, RunCPM).
+
+## License
+
+Copyright (C) 2026 Colin Davis.
+
+This project is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. See [LICENSE](LICENSE).
+
+Third-party code keeps its original copyright and license:
+
+- [`05_accessible_speech_retro_pc/third_party/espk/`](05_accessible_speech_retro_pc/third_party/espk/) — a subset of [eSpeak NG](https://github.com/espeak-ng/espeak-ng) (GPL-3.0-or-later, © Jonathan Duddington, Reece H. Dunn and contributors), including the derived `ESPK.DAT` voice data.
+- [`05_accessible_speech_retro_pc/third_party/klatt/`](05_accessible_speech_retro_pc/third_party/klatt/) — a fixed-point port of `parwave.c` from klatt 3.04 (GPL-3.0-or-later, © Jon Iles, Nick Ing-Simmons, Reece H. Dunn).
+- **DECtalk is not included.** [`get_dectalk.sh`](05_accessible_speech_retro_pc/third_party/dectalk/get_dectalk.sh) downloads it at build time from [github.com/dectalk/dectalk](https://github.com/dectalk/dectalk), whose source is under a proprietary Fonix license. Only small glue code and a patch are tracked here. Firmware built with DECtalk can't be redistributed under the GPL.
+- Emulators and SDKs fetched by the build scripts (pico-994A, RunCPM, pico-sdk, and others) keep their own licenses. The `.patch` files in this repo modify those projects.
