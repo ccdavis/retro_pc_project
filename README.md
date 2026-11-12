@@ -1,5 +1,8 @@
 # AirTag-Sized Retro Computer Project
 
+This is a fully AI written project. I wanted to see how many different possible retro computers 
+could fit inside an actual Apple Air Tag case. 
+
 This repository contains hardware designs, firmware, and emulators for building miniature wireless-keyboard retro computers and game consoles around the Waveshare RP2350-Zero (23.5 × 18.0 mm) and DFRobot Beetle ESP32-C6 / ESP32-C3 (25.0 × 20.5 mm), sized to fit an Apple AirTag or similar coin-sized enclosure.
 
 For detailed hardware specifications, wiring tables, memory budgets, build instructions, and current status, see [OVERVIEW.md](OVERVIEW.md). Each project directory also has its own `PLAN.md`.
